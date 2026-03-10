@@ -1,0 +1,72 @@
+#include <iostream>
+using namespace std;
+
+int heap[100];
+int size = 0;
+
+// Insert element
+void insert(int value) {
+    size++;
+    int i = size;
+    heap[i] = value;
+
+    while (i > 1 && heap[i] < heap[i/2]) {
+        swap(heap[i], heap[i/2]);
+        i = i/2;
+    }
+}
+
+// Delete minimum element
+void deleteMin() {
+    if (size == 0) {
+        cout << "Heap is empty\n";
+        return;
+    }
+
+    heap[1] = heap[size];
+    size--;
+
+    int i = 1;
+
+    while (2*i <= size) {
+        int left = 2*i;
+        int right = 2*i + 1;
+        int smallest = left;
+
+        if (right <= size && heap[right] < heap[left])
+            smallest = right;
+
+        if (heap[i] > heap[smallest]) {
+            swap(heap[i], heap[smallest]);
+            i = smallest;
+        }
+        else
+            break;
+    }
+}
+
+// Display heap
+void display() {
+    for (int i = 1; i <= size; i++)
+        cout << heap[i] << " ";
+    cout << endl;
+}
+
+int main() {
+
+    insert(40);
+    insert(20);
+    insert(30);
+    insert(10);
+    insert(50);
+
+    cout << "Min Heap: ";
+    display();
+
+    deleteMin();
+
+    cout << "After deletion: ";
+    display();
+
+    return 0;
+}
