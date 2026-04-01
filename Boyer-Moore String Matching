@@ -1,0 +1,47 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+#define SIZE 256
+
+// Preprocess bad character
+void badCharHeuristic(string pat, int size, int badChar[]) {
+    for (int i = 0; i < SIZE; i++)
+        badChar[i] = -1;
+
+    for (int i = 0; i < size; i++)
+        badChar[(int)pat[i]] = i;
+}
+
+// Boyer Moore search
+void search(string txt, string pat) {
+    int m = pat.size();
+    int n = txt.size();
+
+    int badChar[SIZE];
+    badCharHeuristic(pat, m, badChar);
+
+    int shift = 0;
+
+    while (shift <= (n - m)) {
+        int j = m - 1;
+
+        while (j >= 0 && pat[j] == txt[shift + j])
+            j--;
+
+        if (j < 0) {
+            cout << "Pattern found at index " << shift << endl;
+            shift += (shift + m < n) ? m - badChar[txt[shift + m]] : 1;
+        } else {
+            shift += max(1, j - badChar[txt[shift + j]]);
+        }
+    }
+}
+
+int main() {
+    string txt = "ABAAABCD";
+    string pat = "ABC";
+
+    search(txt, pat);
+    return 0;
+}
